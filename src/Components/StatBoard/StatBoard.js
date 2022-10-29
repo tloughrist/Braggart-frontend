@@ -1,7 +1,7 @@
 import React from "react";
 import './StatBoard.css';
 
-function StatBoard() {
+function StatBoard({ playerData, gameData, matchData }) {
     return (
         <div className="statboard">
             <div className={"button-container"}>

@@ -1,7 +1,7 @@
 import React from "react";
 import './Matches.css';
 
-function Matches() {
+function Matches({ playerData, gameData, matchData, setMatchData }) {
 
     function handleNewMatch() {
         console.log("NewMatch");

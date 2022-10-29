@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, useHistory } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import './App.css';
 import Banner from "../Banner/Banner.js";
 import Games from "../Games/Games.js";
@@ -21,12 +21,14 @@ function App() {
           playerData={playerData}
           gameData={gameData}
           matchData={matchData}
+          setGameData={setGameData}
         />}>
         </Route>
         <Route path="matches" element={<Matches
             playerData={playerData}
             gameData={gameData}
             matchData={matchData}
+            setMatchData={setMatchData}
           />}>
         </Route>
         <Route path="statboard" element={<StatBoard
@@ -39,6 +41,7 @@ function App() {
             playerData={playerData}
             gameData={gameData}
             matchData={matchData}
+            setPlayerData={setPlayerData}
           />}>
         </Route>
       </Routes>

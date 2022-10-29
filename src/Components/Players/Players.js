@@ -1,7 +1,7 @@
 import React from "react";
 import './Players.css';
 
-function Players() {
+function Players({ playerData, gameData, matchData, setPlayerData }) {
     
     function handleNewPlayer() {
         console.log("NewPlayer");
