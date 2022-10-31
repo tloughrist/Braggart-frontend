@@ -1,8 +1,23 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import './Matches.css';
 
 function Matches({ playerData, gameData, matchData, setMatchData }) {
+    
+    const [isLoaded, setIsLoaded] = useState(false);
 
+    async function loadMatchData() {
+        const response = await fetch("http://localhost:9292/matches");
+        const data = await response.json();
+        console.log(data);
+        setMatchData(data);
+        return setIsLoaded(true)
+    };
+
+    useEffect(() => {loadMatchData()}, []);
+
+    //I need to build a table using this data
+    const displayMatches = isLoaded ? matchData.map((match) => <p>{match.match_date}</p>) : <p>Loading...</p>;
+    
     function handleNewMatch() {
         console.log("NewMatch");
     };
@@ -20,7 +35,7 @@ function Matches({ playerData, gameData, matchData, setMatchData }) {
             </div>
             <hr id="hr-divider"></hr>
             <div className={"match-container"}>
-                <p>Content</p>                
+                {displayMatches}
             </div>
         </div>
     );

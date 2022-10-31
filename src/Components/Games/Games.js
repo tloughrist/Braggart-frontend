@@ -1,7 +1,22 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import './Games.css';
 
 function Games({ playerData, gameData, matchData, setGameData }) {
+
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    async function loadGameData() {
+        const response = await fetch("http://localhost:9292/games");
+        const data = await response.json();
+        console.log(data);
+        setGameData(data);
+        return setIsLoaded(true)
+    };
+
+    useEffect(() => {loadGameData()}, []);
+
+    //I need to build a table using this data
+    const displayGames = isLoaded ? gameData.map((game) => <p>{game.name}</p>) : <p>Loading...</p>;
 
     function handleNewGame() {
         console.log("NewGame");
@@ -20,7 +35,7 @@ function Games({ playerData, gameData, matchData, setGameData }) {
             </div>
             <hr id="hr-divider"></hr>
             <div className={"game-container"}>
-                <p>Content</p>
+                {displayGames}
             </div>
         </div>
     );
