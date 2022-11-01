@@ -3,8 +3,9 @@ import './Players.css';
 
 let displayPlayers = <p>Loading...</p>
 
-function Players({ playerData, setPlayerData }) {
+function Players() {
     
+    const [playerData, setPlayerData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
 
     async function loadPlayerData() {
@@ -24,7 +25,7 @@ function Players({ playerData, setPlayerData }) {
                     <tr>
                         <th>Player</th>
                         <th>Total Matches Played</th>
-                        <th>Favorite Game</th>
+                        <th>Most Played Game</th>
                         <th>Most Recent Game</th>
                         <th></th>
                     </tr>

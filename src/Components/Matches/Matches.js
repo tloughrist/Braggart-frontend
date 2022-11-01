@@ -3,8 +3,9 @@ import './Matches.css';
 
 let displayMatches = <p>Loading...</p>
 
-function Matches({ matchData, setMatchData }) {
+function Matches() {
     
+    const [matchData, setMatchData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
 
     async function loadMatchData() {
