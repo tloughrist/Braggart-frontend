@@ -17,28 +17,41 @@ function StatBoard({ playerData, gameData, matchData }) {
     };
 
     useEffect(() => {loadStatData()}, []);
-    
+
     if(isLoaded) {
+        const gameNames = statData.map((statBlock) => statBlock.game.name);
+        const gameNamesUniq = []; 
+        gameNames.map((gameName) => {
+            if(!gameNamesUniq.includes(gameName)){
+                gameNamesUniq.push(gameName)
+            }});
         displayStats =
             <div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Game</th>
-                            <th>Most Wins</th>
-                            <th>Most/Least Avg. Points</th>
-                        </tr>
-                    </tbody>
-                </table>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Player</th>
-                            <th>Most Wins</th>
-                            <th>Most/Least Avg. Points</th>
-                        </tr>
-                    </tbody>
-                </table>
+                {gameNamesUniq.map((gameName) => 
+                    <div>
+                        <h2>{gameName}</h2>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Player</th>
+                                    <th># Matches</th>
+                                    <th># Wins</th>
+                                    <th>Win Rate</th>
+                                    <th>Avg Point Deviation from Winner</th>
+                                </tr>
+                                {statData.map((statBlock) =>
+                                    <tr>
+                                        <td>{statBlock.player_name}</td>
+                                        <td>{statBlock.num_matches}</td>
+                                        <td>{statBlock.wins}</td>
+                                        <td>{statBlock.win_rate}</td>
+                                        <td>{statBlock.avg_deviation}</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
     }
 
