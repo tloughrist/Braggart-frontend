@@ -28,14 +28,13 @@ function Players({ playerData, gameData, matchData, setPlayerData }) {
                         <th>Most Recent Game</th>
                     </tr>
                     {playerData.map((player) => 
-                        <tr>
+                        <tr key={player.name}>
                             <td>{player.name}</td>
                             <td>{player.append.total_matches}</td>
                             <td>{player.append.fav_game[0]}</td>
                             <td>{player.append.last_game} - {player.append.last_played}</td>
                         </tr>
-                        )
-                    }
+                    )}
                 </tbody>
             </table>
     }

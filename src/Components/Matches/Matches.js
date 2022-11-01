@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
 import './Matches.css';
 
-function Matches({ playerData, gameData, matchData, setMatchData }) {
+let displayMatches = <p>Loading...</p>
+
+function Matches({ matchData, setMatchData }) {
     
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -15,8 +17,27 @@ function Matches({ playerData, gameData, matchData, setMatchData }) {
 
     useEffect(() => {loadMatchData()}, []);
 
-    //I need to build a table using this data
-    const displayMatches = isLoaded ? matchData.map((match) => <p>{match.match_date}</p>) : <p>Loading...</p>;
+    if(isLoaded) {
+        displayMatches = 
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Date</th>
+                        <th>Game</th>
+                        <th>Players</th>
+                        <th>Winner</th>
+                    </tr>
+                    {matchData.map((match) =>
+                        <tr key={`${match.id}${match.date}`}>
+                            <td>{match.match_date}</td>
+                            <td>{match.append.game}</td>
+                            <td>{match.append.players}</td>
+                            <td>{match.append.winner}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+    }
     
     function handleNewMatch() {
         console.log("NewMatch");
