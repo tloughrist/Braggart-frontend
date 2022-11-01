@@ -26,6 +26,7 @@ function Matches({ matchData, setMatchData }) {
                         <th>Game</th>
                         <th>Players</th>
                         <th>Winner</th>
+                        <th></th>
                     </tr>
                     {matchData.map((match) =>
                         <tr key={`${match.id}${match.date}`}>
@@ -33,6 +34,7 @@ function Matches({ matchData, setMatchData }) {
                             <td>{match.append.game}</td>
                             <td>{match.append.players}</td>
                             <td>{match.append.winner}</td>
+                            <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
                         </tr>
                     )}
                 </tbody>
@@ -45,6 +47,10 @@ function Matches({ matchData, setMatchData }) {
     
     function handleSearch() {
         console.log("Search");
+    };
+
+    function handleEdit() {
+        console.log("Edit");
     };
     
     return (

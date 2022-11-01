@@ -26,13 +26,15 @@ function Players({ playerData, gameData, matchData, setPlayerData }) {
                         <th>Total Matches Played</th>
                         <th>Favorite Game</th>
                         <th>Most Recent Game</th>
+                        <th></th>
                     </tr>
                     {playerData.map((player) => 
                         <tr key={player.name}>
                             <td>{player.name}</td>
                             <td>{player.append.total_matches}</td>
-                            <td>{player.append.fav_game[0]}</td>
+                            <td>{player.append.fav_game}</td>
                             <td>{player.append.last_game} - {player.append.last_played}</td>
+                            <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
                         </tr>
                     )}
                 </tbody>
@@ -45,6 +47,10 @@ function Players({ playerData, gameData, matchData, setPlayerData }) {
 
     function handleSearch() {
         console.log("Search");
+    };
+
+    function handleEdit() {
+        console.log("Edit");
     };
 
     return (
