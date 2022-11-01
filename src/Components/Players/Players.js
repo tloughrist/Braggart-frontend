@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import './Players.css';
 
+let displayPlayers = <p>Loading...</p>
+
 function Players({ playerData, gameData, matchData, setPlayerData }) {
     
     const [isLoaded, setIsLoaded] = useState(false);
@@ -15,8 +17,28 @@ function Players({ playerData, gameData, matchData, setPlayerData }) {
 
     useEffect(() => {loadPlayerData()}, []);
 
-    //I need to build a table using this data
-    const displayPlayers = isLoaded ? playerData.map((player) => <p>{player.name}</p>) : <p>Loading...</p>;
+    if(isLoaded) {
+        displayPlayers = 
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Total Matches Played</th>
+                        <th>Favorite Game</th>
+                        <th>Most Recent Game</th>
+                    </tr>
+                    {playerData.map((player) => 
+                        <tr>
+                            <td>{player.name}</td>
+                            <td>{player.append.total_matches}</td>
+                            <td>{player.append.fav_game[0]}</td>
+                            <td>{player.append.last_game} - {player.append.last_played}</td>
+                        </tr>
+                        )
+                    }
+                </tbody>
+            </table>
+    }
 
     function handleNewPlayer() {
         console.log("NewPlayer");
