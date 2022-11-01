@@ -3,7 +3,7 @@ import './Games.css';
 
 let displayGames = <p>Loading...</p>
 
-function Games({ playerData, gameData, matchData, setGameData }) {
+function Games({ gameData, setGameData }) {
 
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -33,7 +33,11 @@ function Games({ playerData, gameData, matchData, setGameData }) {
                             <td>{game.name}</td>
                             <td>{game.append.no_of_matches}</td>
                             <td>{game.append.last_match}</td>
-                            <td>{game.append.most_wins}</td>
+                            <td>{game.append.most_wins.map((winner, index) =>
+                                <span key={`${winner}`}>
+                                    {(index != 0 ? ', ' : '') + winner}
+                                </span>
+                            )}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
                         </tr>
                     )}

@@ -3,7 +3,7 @@ import './Players.css';
 
 let displayPlayers = <p>Loading...</p>
 
-function Players({ playerData, gameData, matchData, setPlayerData }) {
+function Players({ playerData, setPlayerData }) {
     
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -22,7 +22,7 @@ function Players({ playerData, gameData, matchData, setPlayerData }) {
             <table>
                 <tbody>
                     <tr>
-                        <th>Name</th>
+                        <th>Player</th>
                         <th>Total Matches Played</th>
                         <th>Favorite Game</th>
                         <th>Most Recent Game</th>
@@ -32,7 +32,11 @@ function Players({ playerData, gameData, matchData, setPlayerData }) {
                         <tr key={player.name}>
                             <td>{player.name}</td>
                             <td>{player.append.total_matches}</td>
-                            <td>{player.append.fav_game}</td>
+                            <td>{player.append.fav_game.map((game, index) =>
+                                <span key={`${player.name}${game}`}>
+                                    {(index != 0 ? ', ' : '') + game}
+                                </span>
+                            )}</td>
                             <td>{player.append.last_game} - {player.append.last_played}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
                         </tr>

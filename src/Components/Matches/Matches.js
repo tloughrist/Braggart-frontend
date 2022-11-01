@@ -32,7 +32,11 @@ function Matches({ matchData, setMatchData }) {
                         <tr key={`${match.id}${match.date}`}>
                             <td>{match.match_date}</td>
                             <td>{match.append.game}</td>
-                            <td>{match.append.players}</td>
+                            <td>{match.append.players.map((player, index) =>
+                                <span key={`${match.id}${player}`}>
+                                    {(index != 0 ? ', ' : '') + player}
+                                </span>
+                            )}</td>
                             <td>{match.append.winner}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
                         </tr>
