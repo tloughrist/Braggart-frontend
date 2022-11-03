@@ -28,6 +28,7 @@ function Players() {
                         <th>Most Played Game</th>
                         <th>Most Recent Game</th>
                         <th></th>
+                        <th></th>
                     </tr>
                     {playerData.map((player) => 
                         <tr key={player.name}>
@@ -40,6 +41,7 @@ function Players() {
                             )}</td>
                             <td>{player.append.last_game} - {player.append.last_played}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
+                            <td><button className={"button-element"} onClick={handleEdit}>Delete</button></td>
                         </tr>
                     )}
                 </tbody>

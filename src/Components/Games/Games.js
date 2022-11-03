@@ -28,6 +28,7 @@ function Games() {
                         <th>Last Match</th>
                         <th>Most Winning Player</th>
                         <th></th>
+                        <th></th>
                      </tr>
                     {gameData.map((game) =>
                         <tr key={game.name}>
@@ -40,6 +41,7 @@ function Games() {
                                 </span>
                             )}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
+                            <td><button className={"button-element"} onClick={handleEdit}>Delete</button></td>
                         </tr>
                     )}
                 </tbody>

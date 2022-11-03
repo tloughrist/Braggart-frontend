@@ -3,13 +3,13 @@ import './StatBoard.css';
 
 let displayStats = <p>Loading...</p>
 
-function StatBoard({ playerData, gameData, matchData }) {
+function StatBoard() {
 
     const [statData, setStatData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
     
     async function loadStatData() {
-        const response = await fetch("http://localhost:9292/stats");
+        const response = await fetch("http://localhost:9292/stat_blocks");
         const data = await response.json();
         console.log(data);
         setStatData(data);
@@ -39,15 +39,18 @@ function StatBoard({ playerData, gameData, matchData }) {
                                     <th>Win Rate</th>
                                     <th>Avg Point Deviation from Winner</th>
                                 </tr>
-                                {statData.map((statBlock) =>
-                                    <tr>
-                                        <td>{statBlock.player_name}</td>
-                                        <td>{statBlock.num_matches}</td>
-                                        <td>{statBlock.wins}</td>
-                                        <td>{statBlock.win_rate}</td>
-                                        <td>{statBlock.avg_deviation}</td>
-                                    </tr>
-                                )}
+                                {statData.map((statBlock) => {
+                                    if(statBlock.game.name == gameName){
+                                        return(
+                                        <tr>
+                                            <td>{statBlock.player_name}</td>
+                                            <td>{statBlock.num_matches}</td>
+                                            <td>{statBlock.wins}</td>
+                                            <td>{statBlock.win_rate}</td>
+                                            <td>{statBlock.avg_deviation}</td>
+                                        </tr>)
+                                    }
+                                })}
                             </tbody>
                         </table>
                     </div>

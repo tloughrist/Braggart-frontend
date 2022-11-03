@@ -28,6 +28,7 @@ function Matches() {
                         <th>Players</th>
                         <th>Winner</th>
                         <th></th>
+                        <th></th>
                     </tr>
                     {matchData.map((match) =>
                         <tr key={`${match.id}${match.date}`}>
@@ -40,6 +41,7 @@ function Matches() {
                             )}</td>
                             <td>{match.append.winner}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
+                            <td><button className={"button-element"} onClick={handleEdit}>Delete</button></td>
                         </tr>
                     )}
                 </tbody>
