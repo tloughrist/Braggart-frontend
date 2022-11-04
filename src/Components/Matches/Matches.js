@@ -9,7 +9,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     
     const [matchData, setMatchData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
-    const [matchPlayers, setMatchPlayers] = useState([]);
+    const [matchPlayers, setMatchPlayers] = useState({});
     const [matchDate, setMatchDate] = useState();
     const [matchGame, setMatchGame] = useState();
 
@@ -32,6 +32,47 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         const data = await response.json();
         console.log(data);
         setPlayerData(data);
+    };
+
+    async function createMatch(matchDate, matchGame) {
+        const response = await fetch("http://localhost:9292/matches", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                match_date: matchDate,
+                game_id: matchGame
+            })
+        });
+        const data = await response.json();
+        console.log(data);
+        return data.id;
+    };
+
+    async function createPlayerMatch(playerId, points, matchId) {
+        const response = await fetch("http://localhost:9292/player_matches", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                player_id: playerId,
+                points: points,
+                match_id: matchId
+            })
+        });
+        const data = await response.json();
+        console.log(data);
+        return data.id;
+    };
+
+    async function deleteMatch(matchId) {
+        const response = await fetch(`http://localhost:9292/matches/${matchId}`, {
+            method: "DELETE"
+        });
+        const data = await response.json();
+        console.log(data);
     };
 
     useEffect(() =>
@@ -66,8 +107,8 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                                 </span>
                             )}</td>
                             <td>{match.append.winner}</td>
-                            <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
-                            <td><button className={"button-element"} onClick={handleDelete}>Delete</button></td>
+                            <td><button className={"button-element"} value={match.id} onClick={handleEdit}>Edit</button></td>
+                            <td><button className={"button-element"} value={match.id} onClick={handleDelete}>Delete</button></td>
                         </tr>
                     )}
                 </tbody>
@@ -84,11 +125,18 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                             value={player.id}
                             name={player.name}
                             onChange={(e) => {
+                                const id = e.target.value;
                                 if(e.target.checked){
-                                    const sansPlayers = matchPlayers.filter((id) => id === e.target.value);
-                                    setMatchPlayers([...sansPlayers]);
+                                    const keyArray = matchPlayers.keys;
+                                    if(keyArray > 0 && keyArray.includes(id)){
+                                        setMatchPlayers({...matchPlayers})
+                                    } else {
+                                        setMatchPlayers({...matchPlayers, id: 0})
+                                    }
                                 } else {
-                                    setMatchPlayers([...matchPlayers, e.target.value]);
+                                    const sansMatchPlayers = matchPlayers;
+                                    delete sansMatchPlayers[id];
+                                    setMatchPlayers({...sansMatchPlayers});
                                 }
                             }}
                             >                  
@@ -96,9 +144,15 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                         <label htmlFor={player.name}>{player.name}</label>
                         <input
                             type="text"
-                            name={`${player.name}points`
-                            onChange}>
-                        </input>                    </>
+                            name={`${player.name}points`}
+                            onChange={(e) => {
+                                const newMatchPlayers = matchPlayers;
+                                newMatchPlayers[player.id] = e.target.value;
+                                setMatchPlayers({...newMatchPlayers})
+                            }}>
+                        </input>
+                        <label htmlFor={`${player.name}points`}>points</label>
+                    </>
                 )}   
             </div>
     }
@@ -112,16 +166,25 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             </select>
     }
     
-    function handleMatchSubmit() {
-        console.log("NewMatch");
+    async function handleMatchSubmit(e) {
+        e.preventDefault();
+        const matchId = await createMatch(matchDate, matchGame);
+        for (const player in matchPlayers) {
+            await createPlayerMatch(player, matchPlayers[player], matchId);
+        };
+        await loadMatchData();
     };
     
-    function handleDelete() {
-        console.log("Search");
+    async function handleDelete(e) {
+        const matchId = e.target.value;
+        await deleteMatch(matchId);
+        await loadMatchData();
+        await loadPlayerData();
     };
 
-    function handleEdit() {
-        console.log("Edit");
+    async function handleEdit(e) {
+        const matchId = e.target.value;
+ 
     };
     
     return (

@@ -61,7 +61,6 @@ function StatBoard({ playerData }) {
     return (
         <div className="statboard">
             <div className={"button-container"}>
-                <button className={"button-element"}>Add Player</button>
             </div>
             <hr id="hr-divider"></hr>
             <div className={"stat-container"}>
