@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Route, Routes } from "react-router-dom";
 import './App.css';
 import Banner from "../Banner/Banner.js";
@@ -9,17 +9,20 @@ import StatBoard from "../StatBoard/StatBoard.js";
 
 function App() {
 
+  const [playerData, setPlayerData] = useState();
+  const [gameData, setGameData] = useState();
+
   return (
     <div>
       <Banner/>
       <Routes>
-        <Route path="games" element={<Games />}>
+        <Route path="games" element={<Games playerData={playerData} setPlayerData={setPlayerData} gameData={gameData} setGameData={setGameData} />}>
         </Route>
-        <Route path="matches" element={<Matches />}>
+        <Route path="matches" element={<Matches playerData={playerData}  setPlayerData={setPlayerData} gameData={gameData} setGameData={setGameData} />}>
         </Route>
-        <Route path="statboard" element={<StatBoard />}>
+        <Route path="statboard" element={<StatBoard playerData={playerData} />}>
         </Route>
-        <Route path="/players" element={<Players />}>
+        <Route path="/players" element={<Players playerData={playerData} setPlayerData={setPlayerData} />}>
         </Route>
       </Routes>
     </div>

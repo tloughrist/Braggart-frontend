@@ -3,9 +3,8 @@ import './Games.css';
 
 let displayGames = <p>Loading...</p>
 
-function Games() {
+function Games({ playerData, gameData, setGameData }) {
 
-    const [gameData, setGameData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
 
     async function loadGameData() {

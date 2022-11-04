@@ -2,21 +2,47 @@ import React, {useEffect, useState} from "react";
 import './Matches.css';
 
 let displayMatches = <p>Loading...</p>
+let displayPlayerCheckBoxes = <p>Loading...</p>
+let displayGames = <p>Loading...</p>
 
-function Matches() {
+function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     
     const [matchData, setMatchData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
+    const [matchPlayers, setMatchPlayers] = useState([]);
+    const [matchDate, setMatchDate] = useState();
+    const [matchGame, setMatchGame] = useState();
 
     async function loadMatchData() {
         const response = await fetch("http://localhost:9292/matches");
         const data = await response.json();
         console.log(data);
         setMatchData(data);
-        return setIsLoaded(true)
     };
 
-    useEffect(() => {loadMatchData()}, []);
+    async function loadGameData() {
+        const response = await fetch("http://localhost:9292/games");
+        const data = await response.json();
+        console.log(data);
+        setGameData(data);
+    };
+
+    async function loadPlayerData() {
+        const response = await fetch("http://localhost:9292/players");
+        const data = await response.json();
+        console.log(data);
+        setPlayerData(data);
+    };
+
+    useEffect(() =>
+        {async function initialLoad(){
+            await loadMatchData();
+            await loadGameData();
+            await loadPlayerData();
+            setIsLoaded(true);
+        };
+        initialLoad();
+    }, []);
 
     if(isLoaded) {
         displayMatches = 
@@ -41,18 +67,56 @@ function Matches() {
                             )}</td>
                             <td>{match.append.winner}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
-                            <td><button className={"button-element"} onClick={handleEdit}>Delete</button></td>
+                            <td><button className={"button-element"} onClick={handleDelete}>Delete</button></td>
                         </tr>
                     )}
                 </tbody>
             </table>
     }
+
+    if(isLoaded) {
+        displayPlayerCheckBoxes = 
+            <div>
+                {playerData.map((player) =>
+                    <>
+                        <input
+                            type="checkbox"
+                            value={player.id}
+                            name={player.name}
+                            onChange={(e) => {
+                                if(e.target.checked){
+                                    const sansPlayers = matchPlayers.filter((id) => id === e.target.value);
+                                    setMatchPlayers([...sansPlayers]);
+                                } else {
+                                    setMatchPlayers([...matchPlayers, e.target.value]);
+                                }
+                            }}
+                            >                  
+                        </input>
+                        <label htmlFor={player.name}>{player.name}</label>
+                        <input
+                            type="text"
+                            name={`${player.name}points`
+                            onChange}>
+                        </input>                    </>
+                )}   
+            </div>
+    }
+
+    if(isLoaded) {
+        displayGames = 
+            <select onChange={(e) => setMatchGame(e.target.value)}>
+                {gameData.map((game) =>
+                    <option value={game.id}>{game.name}</option>
+                )}   
+            </select>
+    }
     
-    function handleNewMatch() {
+    function handleMatchSubmit() {
         console.log("NewMatch");
     };
     
-    function handleSearch() {
+    function handleDelete() {
         console.log("Search");
     };
 
@@ -62,11 +126,12 @@ function Matches() {
     
     return (
         <div className="matches">
-            <div className={"button-container"}>
-                <input className={"search-element"} name="search" type="text" placeholder="Search matches..."></input>
-                <input className={"button-element"} type="submit" onClick={handleSearch}></input>
-                <button className={"button-element"} onClick={handleNewMatch}>Add New Match</button>
-            </div>
+            <form className={"button-container"} onSubmit={handleMatchSubmit}>
+                <input type="date" onChange={(e) => setMatchDate(e.target.value)}></input>
+                {displayPlayerCheckBoxes}
+                {displayGames}
+                <input type="submit" className={"button-element"} value="Add New Match"></input>
+            </form>
             <hr id="hr-divider"></hr>
             <div className={"match-container"}>
                 {displayMatches}

@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import './Players.css';
 
-let displayPlayers = <p>Loading...</p>
+let displayPlayers = <p>Loading...</p>;
 
-function Players() {
+function Players({ playerData, setPlayerData }) {
     
-    const [playerData, setPlayerData] = useState();
+    
     const [isLoaded, setIsLoaded] = useState(false);
+    const [newPlayerName, setNewPlayerName] = useState();
 
     async function loadPlayerData() {
         const response = await fetch("http://localhost:9292/players");
@@ -14,6 +15,20 @@ function Players() {
         console.log(data);
         setPlayerData(data);
         setIsLoaded(true)
+    };
+
+    async function createNewPlayer(name) {
+        const response = await fetch("http://localhost:9292/players", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                name: name
+            })
+        });
+        const data = await response.json();
+        console.log(data);
     };
 
     useEffect(() => {loadPlayerData()}, []);
@@ -41,32 +56,33 @@ function Players() {
                             )}</td>
                             <td>{player.append.last_game} - {player.append.last_played}</td>
                             <td><button className={"button-element"} onClick={handleEdit}>Edit</button></td>
-                            <td><button className={"button-element"} onClick={handleEdit}>Delete</button></td>
+                            <td><button className={"button-element"} onClick={handleDelete}>Delete</button></td>
                         </tr>
                     )}
                 </tbody>
             </table>
     }
 
-    function handleNewPlayer() {
-        console.log("NewPlayer");
-    };
-
-    function handleSearch() {
-        console.log("Search");
-    };
-
     function handleEdit() {
         console.log("Edit");
     };
 
+    function handleDelete() {
+        console.log("Del");
+    };
+
+    function handlePlayerSubmit(e) {
+        e.preventDefault();
+        createNewPlayer(newPlayerName);
+        loadPlayerData();
+    };
+
     return (
         <div className="players">
-            <div className={"button-container"}>
-                <input className={"search-element"} name="search" type="text" placeholder="Search players..."></input>
-                <input className={"button-element"} type="submit" onClick={handleSearch}></input>
-                <button className={"button-element"} onClick={handleNewPlayer}>Add New Player</button>
-            </div>
+            <form className={"button-container"} onSubmit={handlePlayerSubmit}>
+                <input type="text" placeholder="New Player Name" onChange={(e) => setNewPlayerName(e.target.value)}></input>
+                <input type="submit" className={"button-element"} value="Add New Player"></input>
+            </form>
             <hr id="hr-divider"></hr>
             <div className={"player-container"}>
                 {displayPlayers}

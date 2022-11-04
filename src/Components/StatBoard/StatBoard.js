@@ -3,7 +3,7 @@ import './StatBoard.css';
 
 let displayStats = <p>Loading...</p>
 
-function StatBoard() {
+function StatBoard({ playerData }) {
 
     const [statData, setStatData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
