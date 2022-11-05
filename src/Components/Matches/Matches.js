@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './Matches.css';
+import DisplayMatches from './DisplayMatches.js';
+import DisplayPlayerCheckBoxes from './DisplayPlayerCheckBoxes.js'
 
 let displayMatches = <p>Loading...</p>;
 let displayPlayerCheckBoxes = <p>Loading...</p>;
@@ -15,7 +17,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     const [matchDate, setMatchDate] = useState();
     const [matchGame, setMatchGame] = useState();
     const [editMatchDate, setEditMatchDate] = useState();
-    const [editmatchPlayers, setEditMatchPlayers] = useState({});
+    const [editMatchPlayers, setEditMatchPlayers] = useState({});
     const [editMatchGame, setEditMatchGame] = useState();
 
     async function loadMatchData() {
@@ -109,32 +111,23 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                             playerPointsArr.push(`${key}(${value})`);
                         };
                         return (
-                        <>
-                            <tr key={`${match.id}${match.date}`}>
-                                <td>{match.match_date}</td>
-                                <td>{match.append.game}</td>
-                                <td>{playerPointsArr.map((entry, index) =>
-                                    <span key={`${match.id}${entry}`}>
-                                        {(index != 0 ? ', ' : '') + entry}
-                                    </span>
-                                )}</td>
-                                <td>{match.append.winner}</td>
-                                <td><Popup trigger={<button>Edit</button>} position="bottom right">
-                                    <form>
-                                        <input type="date" onChange={(e) => setEditMatchDate(e.target.value)}></input>
-                                        <select onChange={(e) => setEditMatchGame(e.target.value)}>
-                                            {gameData.map((game) => 
-                                                <option value={game.id}>{game.name}</option>
-                                            )}
-                                        </select>
-                                        
-                                        <input type="submit" className={"button-element"} value="Submit Edit"></input>
-                                    </form>
-                                </Popup></td>
-                                <td><button className={"button-element"} value={match.id} onClick={handleDelete}>Delete</button></td>
-                            </tr>
-                        </>
-                    )})}
+                            <DisplayMatches
+                                match={match}
+                                playerData={playerData}
+                                playerPointsArr={playerPointsArr}
+                                editMatchDate={editMatchDate}
+                                editMatchGame={editMatchGame}
+                                editMatchPlayers={editMatchPlayers}
+                                setEditMatchDate={setEditMatchDate}
+                                setEditMatchGame={setEditMatchGame}
+                                setEditMatchPlayers={setEditMatchPlayers}
+                                gameData={gameData}
+                                handleDelete={handleDelete}
+                                handleEdit={handleEdit}
+                                playerPoints={match.append.players}
+                            />
+                        )
+                    })}
                 </tbody>
             </table>
     }
@@ -143,42 +136,12 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         displayPlayerCheckBoxes = 
             <div>
                 {playerData.map((player) =>
-                    <>
-                        <input
-                            type="checkbox"
-                            value={player.id}
-                            name={player.name}
-                            onChange={(e) => {
-                                const player_id = e.target.value;
-                                if(e.target.checked){
-                                    const keyArray = matchPlayers.keys;
-                                    const matchPlayersHold = matchPlayers;
-                                    if(keyArray > 0 && keyArray.includes(player_id)){
-                                        setMatchPlayers({...matchPlayersHold});
-                                    } else {
-                                        matchPlayersHold[player_id] = 0;
-                                        setMatchPlayers({...matchPlayersHold});
-                                    }
-                                } else {
-                                    const sansMatchPlayers = matchPlayers;
-                                    delete sansMatchPlayers[player_id];
-                                    setMatchPlayers({...sansMatchPlayers});
-                                }
-                            }}
-                            >                  
-                        </input>
-                        <label htmlFor={player.name}>{player.name}</label>
-                        <input
-                            type="text"
-                            name={`${player.name}points`}
-                            onChange={(e) => {
-                                const newMatchPlayers = matchPlayers;
-                                newMatchPlayers[player.id] = e.target.value;
-                                setMatchPlayers({...newMatchPlayers})
-                            }}>
-                        </input>
-                        <label htmlFor={`${player.name}points`}>points</label>
-                    </>
+                    <DisplayPlayerCheckBoxes
+                        player={player}
+                        match_players={matchPlayers}
+                        set_match_players={setMatchPlayers}
+                        edit={false}
+                    />
                 )}   
             </div>
     }
@@ -209,8 +172,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     };
 
     async function handleEdit(match) {
-        
- 
+        console.log(editMatchPlayers)
     };
     
     return (
