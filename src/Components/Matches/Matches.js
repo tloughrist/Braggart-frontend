@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 import './Matches.css';
 
-let displayMatches = <p>Loading...</p>
-let displayPlayerCheckBoxes = <p>Loading...</p>
-let displayGames = <p>Loading...</p>
+let displayMatches = <p>Loading...</p>;
+let displayPlayerCheckBoxes = <p>Loading...</p>;
+let displayGames = <p>Loading...</p>;
 
 function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     
@@ -12,6 +14,9 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     const [matchPlayers, setMatchPlayers] = useState({});
     const [matchDate, setMatchDate] = useState();
     const [matchGame, setMatchGame] = useState();
+    const [editMatchDate, setEditMatchDate] = useState();
+    const [editmatchPlayers, setEditMatchPlayers] = useState({});
+    const [editMatchGame, setEditMatchGame] = useState();
 
     async function loadMatchData() {
         const response = await fetch("http://localhost:9292/matches");
@@ -97,20 +102,39 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                         <th></th>
                         <th></th>
                     </tr>
-                    {matchData.map((match) =>
-                        <tr key={`${match.id}${match.date}`}>
-                            <td>{match.match_date}</td>
-                            <td>{match.append.game}</td>
-                            <td>{match.append.players.map((player, index) =>
-                                <span key={`${match.id}${player}`}>
-                                    {(index != 0 ? ', ' : '') + player}
-                                </span>
-                            )}</td>
-                            <td>{match.append.winner}</td>
-                            <td><button className={"button-element"} value={match.id} onClick={handleEdit}>Edit</button></td>
-                            <td><button className={"button-element"} value={match.id} onClick={handleDelete}>Delete</button></td>
-                        </tr>
-                    )}
+                    {matchData.map((match) => {
+                        const playerPoints = Object.entries(match.append.players);
+                        const playerPointsArr = [];
+                        for (const [key, value] of playerPoints) {
+                            playerPointsArr.push(`${key}(${value})`);
+                        };
+                        return (
+                        <>
+                            <tr key={`${match.id}${match.date}`}>
+                                <td>{match.match_date}</td>
+                                <td>{match.append.game}</td>
+                                <td>{playerPointsArr.map((entry, index) =>
+                                    <span key={`${match.id}${entry}`}>
+                                        {(index != 0 ? ', ' : '') + entry}
+                                    </span>
+                                )}</td>
+                                <td>{match.append.winner}</td>
+                                <td><Popup trigger={<button>Edit</button>} position="bottom right">
+                                    <form>
+                                        <input type="date" onChange={(e) => setEditMatchDate(e.target.value)}></input>
+                                        <select onChange={(e) => setEditMatchGame(e.target.value)}>
+                                            {gameData.map((game) => 
+                                                <option value={game.id}>{game.name}</option>
+                                            )}
+                                        </select>
+                                        
+                                        <input type="submit" className={"button-element"} value="Submit Edit"></input>
+                                    </form>
+                                </Popup></td>
+                                <td><button className={"button-element"} value={match.id} onClick={handleDelete}>Delete</button></td>
+                            </tr>
+                        </>
+                    )})}
                 </tbody>
             </table>
     }
@@ -125,17 +149,19 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                             value={player.id}
                             name={player.name}
                             onChange={(e) => {
-                                const id = e.target.value;
+                                const player_id = e.target.value;
                                 if(e.target.checked){
                                     const keyArray = matchPlayers.keys;
-                                    if(keyArray > 0 && keyArray.includes(id)){
-                                        setMatchPlayers({...matchPlayers})
+                                    const matchPlayersHold = matchPlayers;
+                                    if(keyArray > 0 && keyArray.includes(player_id)){
+                                        setMatchPlayers({...matchPlayersHold});
                                     } else {
-                                        setMatchPlayers({...matchPlayers, id: 0})
+                                        matchPlayersHold[player_id] = 0;
+                                        setMatchPlayers({...matchPlayersHold});
                                     }
                                 } else {
                                     const sansMatchPlayers = matchPlayers;
-                                    delete sansMatchPlayers[id];
+                                    delete sansMatchPlayers[player_id];
                                     setMatchPlayers({...sansMatchPlayers});
                                 }
                             }}
@@ -182,8 +208,8 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         await loadPlayerData();
     };
 
-    async function handleEdit(e) {
-        const matchId = e.target.value;
+    async function handleEdit(match) {
+        
  
     };
     
