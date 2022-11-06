@@ -23,21 +23,21 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     async function loadMatchData() {
         const response = await fetch("http://localhost:9292/matches");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setMatchData(data);
     };
 
     async function loadGameData() {
         const response = await fetch("http://localhost:9292/games");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setGameData(data);
     };
 
     async function loadPlayerData() {
         const response = await fetch("http://localhost:9292/players");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setPlayerData(data);
     };
 
@@ -53,7 +53,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             })
         });
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data.id;
     };
 
@@ -70,13 +70,28 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             })
         });
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data.id;
     };
 
     async function deleteMatch(matchId) {
         const response = await fetch(`http://localhost:9292/matches/${matchId}`, {
             method: "DELETE"
+        });
+        const data = await response.json();
+        //console.log(data);
+    };
+
+    async function updateMatch(matchId, matchObj) {
+        const response = await fetch(`http://localhost:9292/matches/${matchId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                match_date: matchObj.match_date,
+                game_id: matchObj.game_id
+            })
         });
         const data = await response.json();
         console.log(data);
@@ -161,18 +176,27 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         for (const player in matchPlayers) {
             await createPlayerMatch(player, matchPlayers[player], matchId);
         };
-        await loadMatchData();
+        loadMatchData();
     };
     
     async function handleDelete(e) {
         const matchId = e.target.value;
         await deleteMatch(matchId);
         await loadMatchData();
-        await loadPlayerData();
+        loadPlayerData();
     };
 
-    async function handleEdit(match) {
-        console.log(editMatchPlayers)
+    async function handleEdit(matchId) {
+        const updateMatchObj = {};
+        updateMatchObj.match_date = editMatchDate;
+        updateMatchObj.game_id = parseInt(editMatchGame);
+        console.log(updateMatchObj);
+        await updateMatch(matchId, updateMatchObj);
+        for (const [playerId, points] of Object.entries(editMatchPlayers)) {
+            await createPlayerMatch(playerId, points, matchId);
+        };
+        await loadMatchData();
+        loadPlayerData();
     };
     
     return (

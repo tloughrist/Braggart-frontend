@@ -3,21 +3,14 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './Matches.css';
 import DisplayPlayerCheckBoxes from "./DisplayPlayerCheckBoxes";
-import DisplayOptions from "./DisplayOptions";
+import DisplayEditDateGame from "./DisplayEditDateGame";
 
-function DisplayMatches({ match, playerPointsArr, editMatchGame, editMatchPlayers, setEditMatchDate, setEditMatchGame, setEditMatchPlayers, gameData, handleDelete, handleEdit, playerData, playerPoints }) {
-
-    const [matchDate, setMatchDate] = useState(match.match_date);
-
-    function handleDateChange(e) {
-        setMatchDate(e.target.value);
-        setEditMatchDate(e.target.value);
-    }
+function DisplayMatches({ match, playerPointsArr, editMatchPlayers, setEditMatchDate, setEditMatchGame, setEditMatchPlayers, gameData, handleDelete, handleEdit, playerData, playerPoints }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        handleEdit(match);
-    }
+        handleEdit(match.id);
+    };
 
     return (
     <>
@@ -32,20 +25,12 @@ function DisplayMatches({ match, playerPointsArr, editMatchGame, editMatchPlayer
             <td>{match.append.winner}</td>
             <td><Popup trigger={<button>Edit</button>} position="bottom right">
                 <form onSubmit={(e) => handleSubmit(e)}>
-                    <input
-                        type="date"
-                        value={matchDate}
-                        onChange={(e) => handleDateChange(e)}
-                    >
-                    </input>
-                    <select
-                        value={editMatchGame}
-                        onChange={(e) => setEditMatchGame(e.target.value)}
-                    >
-                        {gameData.map((game) => 
-                            <DisplayOptions game={game} game_id={match.game_id} />
-                        )}
-                    </select>
+                    <DisplayEditDateGame
+                        gameData={gameData}
+                        match={match}
+                        setEditMatchDate={setEditMatchDate}
+                        setEditMatchGame={setEditMatchGame}
+                    />
                     {playerData.map((player) =>
                         <DisplayPlayerCheckBoxes
                             player={player}

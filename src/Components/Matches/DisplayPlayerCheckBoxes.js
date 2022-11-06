@@ -21,6 +21,8 @@ function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, pla
         const newMatchPlayers = match_players;
         if(points){
             newMatchPlayers[playerId] = points;
+        } else {
+            delete newMatchPlayers[playerId];
         }
         set_match_players({...newMatchPlayers});
     }, [editIsLoaded]);
@@ -34,6 +36,7 @@ function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, pla
             }
             set_match_players({...newMatchPlayers});
         } else if(match_players !== undefined) {
+            setPoints("");
             const match_playersSans = match_players;
             delete match_playersSans[playerId];
             set_match_players({...match_playersSans});
@@ -43,6 +46,7 @@ function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, pla
     };
 
     function handlePoints(e){
+        setIsChecked(true);
         e.target.value.length > 0 ? setPoints(parseInt(e.target.value)) : setPoints("");
     };
 
