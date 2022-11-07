@@ -76,8 +76,13 @@ function Players({ playerData, setPlayerData }) {
 
     function handlePlayerSubmit(e) {
         e.preventDefault();
-        createNewPlayer(newPlayerName);
-        loadPlayerData();
+        if(newPlayerName) {
+            createNewPlayer(newPlayerName);
+            loadPlayerData();
+        } else {
+            alert("Please enter player name");
+        }
+        
     };
 
     if(isLoaded) {
@@ -105,7 +110,7 @@ function Players({ playerData, setPlayerData }) {
                             <td>
                                 <Popup
                                     key={`${player.id}popup`}
-                                    trigger={<button>Edit</button>}
+                                    trigger={<button className={"button-element"}>Edit</button>}
                                     position="bottom right"
                                 >
                                     <form onSubmit={(e) => handleEditSubmit(e)}>
@@ -128,7 +133,12 @@ function Players({ playerData, setPlayerData }) {
     return (
         <div className="players">
             <form className={"button-container"} onSubmit={handlePlayerSubmit}>
-                <input type="text" placeholder="New Player Name" onChange={(e) => setNewPlayerName(e.target.value)}></input>
+                <input
+                    type="text"
+                    placeholder="New Player Name"
+                    onChange={(e) => setNewPlayerName(e.target.value)}
+                    id="new-player-input"
+                ></input>
                 <input type="submit" className={"button-element"} value="Add New Player"></input>
             </form>
             <hr id="hr-divider"></hr>

@@ -11,7 +11,7 @@ function StatBoard({ playerData }) {
     async function loadStatData() {
         const response = await fetch("http://localhost:9292/stat_blocks");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setStatData(data);
         setIsLoaded(true)
     };
@@ -28,7 +28,7 @@ function StatBoard({ playerData }) {
         displayStats =
             <div>
                 {gameNamesUniq.map((gameName) => 
-                    <div key={`statblock${gameName}`}>
+                    <div key={`statblock${gameName}`} id="stat-container">
                         <h2>{gameName}</h2>
                         <table>
                             <tbody>

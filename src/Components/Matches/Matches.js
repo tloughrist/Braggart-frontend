@@ -14,7 +14,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
 
     //States to hold data for creating matches
     const [matchPlayers, setMatchPlayers] = useState({});
-    const [matchDate, setMatchDate] = useState();
+    const [matchDate, setMatchDate] = useState(Date());
     const [matchGame, setMatchGame] = useState();
 
     //States to hold data for editing matches
@@ -25,7 +25,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     async function loadMatchData() {
         const response = await fetch("http://localhost:9292/matches");
         const data = await response.json();
-        //console.log(data);
+        console.log(data);
         setMatchData(data);
     };
 
@@ -33,6 +33,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         const response = await fetch("http://localhost:9292/games");
         const data = await response.json();
         //console.log(data);
+        setMatchGame(data[0].id);
         setGameData(data);
     };
 
@@ -111,11 +112,15 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
 
     async function handleMatchSubmit(e) {
         e.preventDefault();
-        const matchId = await createMatch(matchDate, matchGame);
-        for (const player in matchPlayers) {
-            await createPlayerMatch(player, matchPlayers[player], matchId);
-        };
-        loadMatchData();
+        if(matchDate && matchGame){
+            const matchId = await createMatch(matchDate, matchGame);
+            //for (const player in matchPlayers) {
+            //    await createPlayerMatch(player, matchPlayers[player], matchId);
+            //};
+            loadMatchData();
+        } else {
+            alert("Please enter date and game");
+        } 
     };
     
     async function handleDelete(e) {
@@ -151,11 +156,13 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                         <th></th>
                     </tr>
                     {matchData.map((match) => {
-                        const playerPoints = Object.entries(match.append.players);
+                        const playerPoints = match.append.players? Object.entries(match.append.players) : {};
                         const playerPointsArr = [];
-                        for (const [key, value] of playerPoints) {
-                            playerPointsArr.push(`${key}(${value})`);
-                        };
+                        if(playerPoints.length > 0) {
+                            for (const [key, value] of playerPoints) {
+                                playerPointsArr.push(`${key}(${value})`);
+                            };
+                        }
                         return (
                             <DisplayMatches
                                 key={`match${match.id}`}
@@ -177,9 +184,10 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             </table>
     }
 
+    //defunct code, but I want to save it
     if(isLoaded) {
         displayPlayerCheckBoxes = 
-            <div>
+            <div id="display-checkbox-container">
                 {playerData.map((player) =>
                     <DisplayPlayerCheckBoxes
                         key={`displaycheck${player.name}`}
@@ -194,7 +202,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
 
     if(isLoaded) {
         displayGames = 
-            <select onChange={(e) => setMatchGame(e.target.value)}>
+            <select onChange={(e) => setMatchGame(e.target.value)} id="new-game-select">
                 {gameData.map((game) =>
                     <option key={`option${game.name}`} value={game.id}>
                         {game.name}
@@ -206,10 +214,19 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     return (
         <div className="matches">
             <form className={"button-container"} onSubmit={handleMatchSubmit}>
-                <input type="date" onChange={(e) => setMatchDate(e.target.value)}></input>
-                {displayPlayerCheckBoxes}
-                {displayGames}
-                <input type="submit" className={"button-element"} value="Add New Match"></input>
+                <input
+                    type="date"
+                    onChange={(e) => setMatchDate(e.target.value)}
+                    id="new-date-input"
+                ></input>
+                <div id="game-container">
+                    {displayGames}
+                </div>
+                <input
+                    type="submit"
+                    className={"button-element"}
+                    value="Add New Match"
+                ></input>
             </form>
             <hr id="hr-divider"></hr>
             <div className={"match-container"}>

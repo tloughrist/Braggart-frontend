@@ -4,12 +4,12 @@ import './Matches.css';
 function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, playerPoints, edit }){
     
     const [isChecked, setIsChecked] = useState(false);
-    const [points, setPoints] = useState("");
+    const [points, setPoints] = useState(0);
     const [playerId, setPlayerId] = useState(player.id);
     const [editIsLoaded, setEditIsLoaded] = useState(false);
     
     useEffect(() => {
-        if(edit){
+        if(edit && playerPoints){
             Object.keys(playerPoints).includes(player.name) ? setIsChecked(true) : setIsChecked(false);
             playerPoints[player.name] ? setPoints(playerPoints[player.name]) : setPoints("");
             setEditIsLoaded(true);
@@ -30,7 +30,7 @@ function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, pla
         setIsChecked(!isChecked);
         if(!isChecked){
             const newMatchPlayers = match_players;
-            if(points){
+            if(points >= 0){
                 newMatchPlayers[playerId] = points;
             }
             set_match_players({...newMatchPlayers});
@@ -60,24 +60,29 @@ function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, pla
     }, [points]);
 
     return (
-        <>
-            <input
-                type="checkbox"
-                value={playerId}
-                name={player.name}
-                checked={isChecked}
-                onChange={(e) => handleCheck(e)}
-                >                  
-            </input>
-            <label htmlFor={player.name}>{player.name}</label>
-            <input
-                type="number"
-                name={`${player.name}points`}
-                value={points}
-                onChange={(e) => handlePoints(e)}>
-            </input>
-            <label htmlFor={`${player.name}points`}>points</label>
-        </>
+        <span>
+            <p>
+                <input
+                    type="checkbox"
+                    value={playerId}
+                    name={player.name}
+                    checked={isChecked}
+                    onChange={(e) => handleCheck(e)}
+                    className="checkbox"
+                ></input>
+                <label htmlFor={player.name}>{player.name}</label>
+            </p>
+            <p>
+                <input
+                    type="number"
+                    name={`${player.name}points`}
+                    value={points}
+                    onChange={(e) => handlePoints(e)}
+                    className="points"
+                ></input>
+                <label htmlFor={`${player.name}points`}>points</label>
+            </p>
+        </span>
     );
 };
 

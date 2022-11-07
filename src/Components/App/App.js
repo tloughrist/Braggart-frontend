@@ -22,7 +22,7 @@ function App() {
         </Route>
         <Route path="statboard" element={<StatBoard playerData={playerData} />}>
         </Route>
-        <Route path="/players" element={<Players playerData={playerData} setPlayerData={setPlayerData} />}>
+        <Route path="/" element={<Players playerData={playerData} setPlayerData={setPlayerData} />}>
         </Route>
       </Routes>
     </div>

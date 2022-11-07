@@ -24,7 +24,7 @@ function DisplayMatches({ match, playerPointsArr, editMatchPlayers, setEditMatch
             <td>{match.append.winner}</td>
             <td><Popup
                     key={`${match.id}popup`}
-                    trigger={<button>Edit</button>}
+                    trigger={<button className={"button-element"}>Edit</button>}
                     position="bottom right"
                 >
                 <form onSubmit={(e) => handleSubmit(e)}>
