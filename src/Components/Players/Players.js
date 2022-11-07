@@ -48,6 +48,14 @@ function Players({ playerData, setPlayerData }) {
         console.log(data);
     };
 
+    async function deletePlayer(id) {
+        const response = await fetch(`http://localhost:9292/players/${id}`, {
+            method: "DELETE"
+        });
+        const data = await response.json();
+        //console.log(data);
+    };
+
     useEffect(() => {loadPlayerData()}, []);
 
     function handleNameChange(name, id){
@@ -61,8 +69,9 @@ function Players({ playerData, setPlayerData }) {
         loadPlayerData();
     };
 
-    function handleDelete(playerId) {
-        console.log("Del");
+    async function handleDelete(playerId) {
+        await deletePlayer(playerId);
+        loadPlayerData();
     };
 
     function handlePlayerSubmit(e) {
