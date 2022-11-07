@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import 'reactjs-popup/dist/index.css';
 import './Matches.css';
 
 function DisplayOptions({ game, game_id }){
@@ -12,6 +11,7 @@ function DisplayOptions({ game, game_id }){
 
     return (
         <option
+            key={`gameoption${game.id}`}
             value={game.id}
             selected={isSelected}
         >

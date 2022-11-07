@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import 'reactjs-popup/dist/index.css';
 import './Matches.css';
 import DisplayOptions from "./DisplayOptions";
 
@@ -23,7 +22,7 @@ function DisplayEditDateGame({ gameData, match, setEditMatchDate, setEditMatchGa
     };
 
     return (
-        <>
+        <div key={`EditMatch${match.id}${match.match_date}`}>
             <input
                 type="date"
                 value={matchDate}
@@ -35,10 +34,14 @@ function DisplayEditDateGame({ gameData, match, setEditMatchDate, setEditMatchGa
                 onChange={(e) => handleGameChange(e)}
             >
                 {gameData.map((game) => 
-                    <DisplayOptions game={game} game_id={match.game_id} />
+                    <DisplayOptions
+                        key={`optionsfor${game.name}`}
+                        game={game}
+                        game_id={match.game_id}
+                    />
                 )}
             </select>
-        </>
+        </div>
     );
 };
 

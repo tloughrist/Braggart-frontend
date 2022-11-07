@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import 'reactjs-popup/dist/index.css';
 import './Matches.css';
 
 function DisplayPlayerCheckBoxes({ player, match_players, set_match_players, playerPoints, edit }){

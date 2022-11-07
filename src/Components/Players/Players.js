@@ -5,14 +5,13 @@ let displayPlayers = <p>Loading...</p>;
 
 function Players({ playerData, setPlayerData }) {
     
-    
     const [isLoaded, setIsLoaded] = useState(false);
     const [newPlayerName, setNewPlayerName] = useState();
 
     async function loadPlayerData() {
         const response = await fetch("http://localhost:9292/players");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setPlayerData(data);
         setIsLoaded(true)
     };

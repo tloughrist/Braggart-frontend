@@ -10,7 +10,7 @@ function Games({ playerData, gameData, setGameData }) {
     async function loadGameData() {
         const response = await fetch("http://localhost:9292/games");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setGameData(data);
         return setIsLoaded(true)
     };

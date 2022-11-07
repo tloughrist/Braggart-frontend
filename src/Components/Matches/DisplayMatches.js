@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './Matches.css';
@@ -13,7 +13,6 @@ function DisplayMatches({ match, playerPointsArr, editMatchPlayers, setEditMatch
     };
 
     return (
-    <>
         <tr key={`${match.id}${match.match_date}`}>
             <td>{match.match_date}</td>
             <td>{match.append.game}</td>
@@ -23,7 +22,11 @@ function DisplayMatches({ match, playerPointsArr, editMatchPlayers, setEditMatch
                 </span>
             )}</td>
             <td>{match.append.winner}</td>
-            <td><Popup trigger={<button>Edit</button>} position="bottom right">
+            <td><Popup
+                    key={`${match.id}popup`}
+                    trigger={<button>Edit</button>}
+                    position="bottom right"
+                >
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <DisplayEditDateGame
                         gameData={gameData}
@@ -33,6 +36,7 @@ function DisplayMatches({ match, playerPointsArr, editMatchPlayers, setEditMatch
                     />
                     {playerData.map((player) =>
                         <DisplayPlayerCheckBoxes
+                            key={`playerCheck${player.id}`}
                             player={player}
                             match_players={editMatchPlayers}
                             set_match_players={setEditMatchPlayers}
@@ -45,7 +49,6 @@ function DisplayMatches({ match, playerPointsArr, editMatchPlayers, setEditMatch
             </Popup></td>
             <td><button className={"button-element"} value={match.id} onClick={handleDelete}>Delete</button></td>
         </tr>
-    </>
     )
 };
 

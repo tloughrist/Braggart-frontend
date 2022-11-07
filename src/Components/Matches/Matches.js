@@ -1,6 +1,4 @@
 import React, {useEffect, useState} from "react";
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 import './Matches.css';
 import DisplayMatches from './DisplayMatches.js';
 import DisplayPlayerCheckBoxes from './DisplayPlayerCheckBoxes.js'
@@ -109,7 +107,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
 
     if(isLoaded) {
         displayMatches = 
-            <table>
+            <table key="match_table">
                 <tbody>
                     <tr>
                         <th>Date</th>
@@ -127,6 +125,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
                         };
                         return (
                             <DisplayMatches
+                                key={`match${match.id}`}
                                 match={match}
                                 playerData={playerData}
                                 playerPointsArr={playerPointsArr}
@@ -152,6 +151,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             <div>
                 {playerData.map((player) =>
                     <DisplayPlayerCheckBoxes
+                        key={`displaycheck${player.name}`}
                         player={player}
                         match_players={matchPlayers}
                         set_match_players={setMatchPlayers}
@@ -165,7 +165,12 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         displayGames = 
             <select onChange={(e) => setMatchGame(e.target.value)}>
                 {gameData.map((game) =>
-                    <option value={game.id}>{game.name}</option>
+                    <option
+                        key={`option${game.name}`}
+                        value={game.id}
+                    >
+                        {game.name}
+                    </option>
                 )}   
             </select>
     }
@@ -190,7 +195,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         const updateMatchObj = {};
         updateMatchObj.match_date = editMatchDate;
         updateMatchObj.game_id = parseInt(editMatchGame);
-        console.log(updateMatchObj);
+        //console.log(updateMatchObj);
         await updateMatch(matchId, updateMatchObj);
         for (const [playerId, points] of Object.entries(editMatchPlayers)) {
             await createPlayerMatch(playerId, points, matchId);

@@ -28,7 +28,7 @@ function StatBoard({ playerData }) {
         displayStats =
             <div>
                 {gameNamesUniq.map((gameName) => 
-                    <div>
+                    <div key={`statblock${gameName}`}>
                         <h2>{gameName}</h2>
                         <table>
                             <tbody>
@@ -42,7 +42,7 @@ function StatBoard({ playerData }) {
                                 {statData.map((statBlock) => {
                                     if(statBlock.game.name == gameName){
                                         return(
-                                        <tr>
+                                        <tr key={`statblock${statBlock.id}`}>
                                             <td>{statBlock.player_name}</td>
                                             <td>{statBlock.num_matches}</td>
                                             <td>{statBlock.wins}</td>
