@@ -11,9 +11,13 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     
     const [matchData, setMatchData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
+
+    //States to hold data for creating matches
     const [matchPlayers, setMatchPlayers] = useState({});
     const [matchDate, setMatchDate] = useState();
     const [matchGame, setMatchGame] = useState();
+
+    //States to hold data for editing matches
     const [editMatchDate, setEditMatchDate] = useState();
     const [editMatchPlayers, setEditMatchPlayers] = useState({});
     const [editMatchGame, setEditMatchGame] = useState();
@@ -105,76 +109,6 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         initialLoad();
     }, []);
 
-    if(isLoaded) {
-        displayMatches = 
-            <table key="match_table">
-                <tbody>
-                    <tr>
-                        <th>Date</th>
-                        <th>Game</th>
-                        <th>Players</th>
-                        <th>Winner</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    {matchData.map((match) => {
-                        const playerPoints = Object.entries(match.append.players);
-                        const playerPointsArr = [];
-                        for (const [key, value] of playerPoints) {
-                            playerPointsArr.push(`${key}(${value})`);
-                        };
-                        return (
-                            <DisplayMatches
-                                key={`match${match.id}`}
-                                match={match}
-                                playerData={playerData}
-                                playerPointsArr={playerPointsArr}
-                                editMatchDate={editMatchDate}
-                                editMatchGame={editMatchGame}
-                                editMatchPlayers={editMatchPlayers}
-                                setEditMatchDate={setEditMatchDate}
-                                setEditMatchGame={setEditMatchGame}
-                                setEditMatchPlayers={setEditMatchPlayers}
-                                gameData={gameData}
-                                handleDelete={handleDelete}
-                                handleEdit={handleEdit}
-                                playerPoints={match.append.players}
-                            />
-                        )
-                    })}
-                </tbody>
-            </table>
-    }
-
-    if(isLoaded) {
-        displayPlayerCheckBoxes = 
-            <div>
-                {playerData.map((player) =>
-                    <DisplayPlayerCheckBoxes
-                        key={`displaycheck${player.name}`}
-                        player={player}
-                        match_players={matchPlayers}
-                        set_match_players={setMatchPlayers}
-                        edit={false}
-                    />
-                )}   
-            </div>
-    }
-
-    if(isLoaded) {
-        displayGames = 
-            <select onChange={(e) => setMatchGame(e.target.value)}>
-                {gameData.map((game) =>
-                    <option
-                        key={`option${game.name}`}
-                        value={game.id}
-                    >
-                        {game.name}
-                    </option>
-                )}   
-            </select>
-    }
-    
     async function handleMatchSubmit(e) {
         e.preventDefault();
         const matchId = await createMatch(matchDate, matchGame);
@@ -203,6 +137,71 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         await loadMatchData();
         loadPlayerData();
     };
+
+    if(isLoaded) {
+        displayMatches = 
+            <table key="match_table">
+                <tbody>
+                    <tr>
+                        <th>Date</th>
+                        <th>Game</th>
+                        <th>Players</th>
+                        <th>Winner</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    {matchData.map((match) => {
+                        const playerPoints = Object.entries(match.append.players);
+                        const playerPointsArr = [];
+                        for (const [key, value] of playerPoints) {
+                            playerPointsArr.push(`${key}(${value})`);
+                        };
+                        return (
+                            <DisplayMatches
+                                key={`match${match.id}`}
+                                match={match}
+                                playerData={playerData}
+                                editMatchPlayers={editMatchPlayers}
+                                setEditMatchDate={setEditMatchDate}
+                                setEditMatchGame={setEditMatchGame}
+                                setEditMatchPlayers={setEditMatchPlayers}
+                                gameData={gameData}
+                                handleDelete={handleDelete}
+                                handleEdit={handleEdit}
+                                playerPoints={match.append.players}
+                                playerPointsArr={playerPointsArr}
+                            />
+                        )
+                    })}
+                </tbody>
+            </table>
+    }
+
+    if(isLoaded) {
+        displayPlayerCheckBoxes = 
+            <div>
+                {playerData.map((player) =>
+                    <DisplayPlayerCheckBoxes
+                        key={`displaycheck${player.name}`}
+                        player={player}
+                        match_players={matchPlayers}
+                        set_match_players={setMatchPlayers}
+                        edit={false}
+                    />
+                )}   
+            </div>
+    }
+
+    if(isLoaded) {
+        displayGames = 
+            <select onChange={(e) => setMatchGame(e.target.value)}>
+                {gameData.map((game) =>
+                    <option key={`option${game.name}`} value={game.id}>
+                        {game.name}
+                    </option>
+                )}   
+            </select>
+    }
     
     return (
         <div className="matches">
