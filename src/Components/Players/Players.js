@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import './Players.css';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
+import {readPlayers, createPlayer, deletePlayer, updatePlayer} from './PlayerCRUD.js';
 
 let displayPlayers = <p>Loading...</p>;
 
@@ -12,51 +13,14 @@ function Players({ playerData, setPlayerData }) {
     const [editPlayerName, setEditPlayerName] = useState();
     const [editPlayerId, setEditPlayerId] = useState();
 
-    async function loadPlayerData() {
-        const response = await fetch("http://localhost:9292/players");
-        const data = await response.json();
-        //console.log(data);
-        setPlayerData(data);
-        setIsLoaded(true)
-    };
-
-    async function createNewPlayer(name) {
-        const response = await fetch("http://localhost:9292/players", {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name
-            })
-        });
-        const data = await response.json();
-        //console.log(data);
-    };
-
-    async function updatePlayer(id, name) {
-        const response = await fetch(`http://localhost:9292/players/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name
-            })
-        });
-        const data = await response.json();
-        console.log(data);
-    };
-
-    async function deletePlayer(id) {
-        const response = await fetch(`http://localhost:9292/players/${id}`, {
-            method: "DELETE"
-        });
-        const data = await response.json();
-        //console.log(data);
-    };
-
-    useEffect(() => {loadPlayerData()}, []);
+    useEffect(() => {
+        async function initialLoad(){
+            const players = await readPlayers();
+            await setPlayerData(players);
+            setIsLoaded(true);
+        }
+        initialLoad();   
+    }, []);
 
     function handleNameChange(name, id){
         setEditPlayerName(name);
@@ -66,23 +30,25 @@ function Players({ playerData, setPlayerData }) {
     async function handleEditSubmit(e){
         e.preventDefault();
         await updatePlayer(editPlayerId, editPlayerName);
-        loadPlayerData();
+        const players = await readPlayers();
+        setPlayerData(players);
     };
 
     async function handleDelete(playerId) {
         await deletePlayer(playerId);
-        loadPlayerData();
+        const players = await readPlayers();
+        setPlayerData(players);
     };
 
-    function handlePlayerSubmit(e) {
+    async function handlePlayerSubmit(e) {
         e.preventDefault();
         if(newPlayerName) {
-            createNewPlayer(newPlayerName);
-            loadPlayerData();
+            await createPlayer(newPlayerName);
+            const players = await readPlayers();
+            setPlayerData(players);
         } else {
             alert("Please enter player name");
         }
-        
     };
 
     if(isLoaded) {
@@ -113,7 +79,7 @@ function Players({ playerData, setPlayerData }) {
                                     trigger={<button className={"button-element"}>Edit</button>}
                                     position="bottom right"
                                 >
-                                    <form onSubmit={(e) => handleEditSubmit(e)}>
+                                    <form onSubmit={handleEditSubmit}>
                                         <input
                                             type="text"
                                             placeholder={player.name}
@@ -132,15 +98,23 @@ function Players({ playerData, setPlayerData }) {
 
     return (
         <div className="players">
-            <form className={"button-container"} onSubmit={handlePlayerSubmit}>
-                <input
-                    type="text"
-                    placeholder="New Player Name"
-                    onChange={(e) => setNewPlayerName(e.target.value)}
-                    id="new-player-input"
-                ></input>
-                <input type="submit" className={"button-element"} value="Add New Player"></input>
-            </form>
+            <div className={"button-container"}>
+                <Popup
+                    key={`newplayerpopup`}
+                    trigger={<button className={"button-element"}>Create New Player</button>}
+                    position="bottom right"
+                >
+                    <form  onSubmit={handlePlayerSubmit}>
+                        <input
+                            type="text"
+                            placeholder="New Player Name"
+                            onChange={(e) => setNewPlayerName(e.target.value)}
+                            id="new-player-input"
+                        ></input>
+                        <input type="submit" className={"button-element"} value="Add New Player"></input>
+                    </form>
+                </Popup>
+            </div>
             <hr id="hr-divider"></hr>
             <div className={"player-container"}>
                 {displayPlayers}

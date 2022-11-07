@@ -3,7 +3,7 @@ import './Games.css';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
-function DisplayPopUp({ game, updateGame, loadGameData }) {
+function DisplayPopUp({ game, updateGame, readGames, setGameData }) {
 
     const [popIsChecked, setPopIsChecked] = useState(game.high_score_to_win);
     const [popIsHighScore, setPopIsHighScore] = useState(game.high_score_to_win);
@@ -18,11 +18,9 @@ function DisplayPopUp({ game, updateGame, loadGameData }) {
 
     async function handleEditSubmit(e){
         e.preventDefault();
-        console.log(game.id)
-        console.log(editGameName)
-        console.log(editIsHighScore)
-        await updateGame(game.id, editGameName, editIsHighScore)
-        loadGameData();
+        await updateGame(game.id, editGameName, editIsHighScore);
+        const games = await readGames();
+        await setGameData(games);
     };
 
     return (
@@ -32,7 +30,7 @@ function DisplayPopUp({ game, updateGame, loadGameData }) {
                 trigger={<button className={"button-element"}>Edit</button>}
                 position="bottom right"
             >
-                <form onSubmit={(e) => handleEditSubmit(e)}>
+                <form onSubmit={handleEditSubmit}>
                     <input
                         type="text"
                         placeholder={game.name}

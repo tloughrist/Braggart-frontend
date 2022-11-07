@@ -3,20 +3,20 @@ import './StatBoard.css';
 
 let displayStats = <p>Loading...</p>
 
-function StatBoard({ playerData }) {
+function StatBoard() {
 
     const [statData, setStatData] = useState();
     const [isLoaded, setIsLoaded] = useState(false);
     
-    async function loadStatData() {
+    async function readStats() {
         const response = await fetch("http://localhost:9292/stat_blocks");
         const data = await response.json();
         //console.log(data);
         setStatData(data);
-        setIsLoaded(true)
+        setIsLoaded(true);
     };
 
-    useEffect(() => {loadStatData()}, []);
+    useEffect(() => {readStats()}, []);
 
     if(isLoaded) {
         const gameNames = statData.map((statBlock) => statBlock.game.name);

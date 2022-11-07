@@ -16,7 +16,7 @@ function App() {
     <div>
       <Banner/>
       <Routes>
-        <Route path="games" element={<Games playerData={playerData} setPlayerData={setPlayerData} gameData={gameData} setGameData={setGameData} />}>
+        <Route path="games" element={<Games gameData={gameData} setGameData={setGameData} />}>
         </Route>
         <Route path="matches" element={<Matches playerData={playerData}  setPlayerData={setPlayerData} gameData={gameData} setGameData={setGameData} />}>
         </Route>

@@ -3,80 +3,41 @@ import './Games.css';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import DisplayPopUp from './DisplayPopup.js';
+import {readGames, createGame, updateGame, deleteGame} from './GameCRUD.js';
 
 let displayGames = <p>Loading...</p>
 
-function Games({ playerData, gameData, setGameData }) {
+function Games({ gameData, setGameData }) {
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [isChecked, setIsChecked] = useState(true);
     const [isHighScore, setIsHighScore] = useState(true);
-    const [newGameName, setNewGameName] = useState();
+    const [newGameName, setNewGameName] = useState()
 
-    async function loadGameData() {
-        const response = await fetch("http://localhost:9292/games");
-        const data = await response.json();
-        //console.log(data);
-        setGameData(data);
-        return setIsLoaded(true)
-    };
+    useEffect(() => {
+        async function initialLoad(){
+            const games = await readGames();
+            await setGameData(games);
+            setIsLoaded(true);
+        };
+        initialLoad()
+    }, []);
 
-    async function createGame(name, high_score_to_win) {
-        const response = await fetch("http://localhost:9292/games", {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name,
-                high_score_to_win: high_score_to_win
-            })
-        });
-        const data = await response.json();
-        //console.log(data);
-        return data.id;
-    };
-
-    async function updateGame(id, name, high_score_to_win) {
-        const response = await fetch(`http://localhost:9292/games/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name,
-                high_score_to_win: high_score_to_win
-            })
-        });
-        const data = await response.json();
-        console.log(data);
-        return data.id;
-    };
-
-    async function deleteGame(id) {
-        const response = await fetch(`http://localhost:9292/games/${id}`, {
-            method: "DELETE"
-        });
-        const data = await response.json();
-        //console.log(data);
-    };
-
-    useEffect(() => {loadGameData()}, []);
-
-
-    async function handleNewGame() {
+    async function handleNewGame(e) {
+        e.preventDefault();
         if(newGameName){
             await createGame(newGameName, isHighScore);
-            loadGameData();
+            const games = await readGames();
+            await setGameData(games);
         } else {
             alert("Please enter game name");
         }
-        
     };
 
     async function handleDelete(id) {
         await deleteGame(id);
-        loadGameData();
+        const games = await readGames();
+        await setGameData(games);
     };
 
     function handleCheck() {
@@ -97,7 +58,7 @@ function Games({ playerData, gameData, setGameData }) {
                         <th></th>
                      </tr>
                     {gameData.map((game) =>
-                        <tr key={game.name}>
+                        <tr key={`${game.name}${game.id}`}>
                             <td>{game.name}</td>
                             <td>{game.append.no_of_matches}</td>
                             <td>{game.append.last_match}</td>
@@ -109,7 +70,8 @@ function Games({ playerData, gameData, setGameData }) {
                             <DisplayPopUp
                                 game={game}
                                 updateGame={updateGame}
-                                loadGameData={loadGameData}
+                                readGames={readGames}
+                                setGameData={setGameData}
                             />
                             <td><button className={"button-element"} onClick={() => handleDelete(game.id)}>Delete</button></td>
                         </tr>
@@ -121,24 +83,30 @@ function Games({ playerData, gameData, setGameData }) {
     return (
         <div className="games">
             <div className={"button-container"}>
-                <form onSubmit={handleNewGame}>
-                    <input
-                        type="text"
-                        placeholder="Name of game"
-                        onChange={(e) => setNewGameName(e.target.value)}
-                        id="new-game-input"
-                    ></input>
-                    <label htmlFor="highest?" id="high-score-label">High Score Wins?</label>
-                    <input
-                        type="checkbox"
-                        value={isHighScore}
-                        name="highest?"
-                        checked={isChecked}
-                        onChange={handleCheck}
-                        id="high-score-input"
-                    ></input>
-                    <input type="submit" className={"button-element"} value="Add New Game"></input>
-                </form>    
+                <Popup
+                    key={`newgamepopup`}
+                    trigger={<button className={"button-element"}>Create New Game</button>}
+                    position="bottom right"
+                >
+                    <form onSubmit={handleNewGame}>
+                        <input
+                            type="text"
+                            placeholder="Name of game"
+                            onChange={(e) => setNewGameName(e.target.value)}
+                            id="new-game-input"
+                        ></input>
+                        <label htmlFor="highest?" id="high-score-label">High Score Wins?</label>
+                        <input
+                            type="checkbox"
+                            value={isHighScore}
+                            name="highest?"
+                            checked={isChecked}
+                            onChange={handleCheck}
+                            id="high-score-input"
+                        ></input>
+                        <input type="submit" className={"button-element"} value="Add New Game"></input>
+                    </form>   
+                </Popup>
             </div>
             <hr id="hr-divider"></hr>
             <div className={"game-container"}>
