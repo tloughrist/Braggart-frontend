@@ -3,7 +3,7 @@ import './Matches.css';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import DisplayMatches from './DisplayMatches.js';
-import {readMatches, readPlayers, readGames, createMatch, createPlayerMatch, deleteMatch, updateMatch} from './MatchCRUD.js';
+import {readMatches, readPlayers, readGames, createMatch, createPlayerMatch, deleteMatch, updateMatch, removePlayerMatches} from './MatchCRUD.js';
 
 let displayMatches = <p>Loading...</p>;
 let displayGames = <p>Loading...</p>;
@@ -14,7 +14,6 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     const [isLoaded, setIsLoaded] = useState(false);
 
     //States to hold data for creating matches
-    const [matchPlayers, setMatchPlayers] = useState({});
     const [matchDate, setMatchDate] = useState(Date());
     const [matchGame, setMatchGame] = useState();
 
@@ -29,7 +28,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             setMatchData(matches);
             const games = await readGames();
             setGameData(games);
-            if(games > 0){
+            if(games.length > 0){
                 setMatchGame(games[0].id);
             }
             const players = await readPlayers();
@@ -42,8 +41,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     async function handleMatchSubmit(e) {
         e.preventDefault();
         if(matchDate && matchGame){
-            const matchId = await createMatch(matchDate, matchGame);
-            const matches = await readMatches();
+            const matches = await createMatch(matchDate, matchGame);
             setMatchData(matches);
         } else {
             alert("Please enter date and game");
@@ -52,8 +50,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
     
     async function handleDelete(e) {
         const matchId = e.target.value;
-        await deleteMatch(matchId);
-        const matches = await readMatches();
+        const matches = await deleteMatch(matchId);
         setMatchData(matches);
         const players = await readPlayers();
         setPlayerData(players);
@@ -63,15 +60,14 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
         const updateMatchObj = {};
         updateMatchObj.match_date = editMatchDate;
         updateMatchObj.game_id = parseInt(editMatchGame);
-        //console.log(updateMatchObj);
-        await updateMatch(matchId, updateMatchObj);
+        await removePlayerMatches(matchId);
         for (const [playerId, points] of Object.entries(editMatchPlayers)) {
             await createPlayerMatch(playerId, points, matchId);
         };
-        const matches = await readMatches();
+        const matches = await updateMatch(matchId, updateMatchObj);
         setMatchData(matches);
         const players = await readPlayers();
-        setPlayerData(players);
+         setPlayerData(players);
     };
 
     if(isLoaded) {

@@ -60,6 +60,15 @@ export async function deleteMatch(matchId) {
     return data;
 };
 
+export async function removePlayerMatches(matchId) {
+    const response = await fetch(`http://localhost:9292/matches/all_player_matches/${matchId}`, {
+        method: "PATCH"
+    });
+    const data = await response.json();
+    //console.log(data);
+    return data;
+};
+
 export async function updateMatch(matchId, matchObj) {
     const response = await fetch(`http://localhost:9292/matches/${matchId}`, {
         method: "PATCH",

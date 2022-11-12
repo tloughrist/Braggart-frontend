@@ -18,8 +18,7 @@ function DisplayPopUp({ game, updateGame, readGames, setGameData }) {
 
     async function handleEditSubmit(e){
         e.preventDefault();
-        await updateGame(game.id, editGameName, editIsHighScore);
-        const games = await readGames();
+        const games = await updateGame(game.id, editGameName, editIsHighScore);
         await setGameData(games);
     };
 

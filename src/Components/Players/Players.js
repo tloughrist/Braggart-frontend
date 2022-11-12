@@ -29,22 +29,19 @@ function Players({ playerData, setPlayerData }) {
 
     async function handleEditSubmit(e){
         e.preventDefault();
-        await updatePlayer(editPlayerId, editPlayerName);
-        const players = await readPlayers();
+        const players = await updatePlayer(editPlayerId, editPlayerName);
         setPlayerData(players);
     };
 
     async function handleDelete(playerId) {
-        await deletePlayer(playerId);
-        const players = await readPlayers();
+        const players = await deletePlayer(playerId);
         setPlayerData(players);
     };
 
     async function handlePlayerSubmit(e) {
         e.preventDefault();
         if(newPlayerName) {
-            await createPlayer(newPlayerName);
-            const players = await readPlayers();
+            const players = await createPlayer(newPlayerName);
             setPlayerData(players);
         } else {
             alert("Please enter player name");

@@ -26,8 +26,7 @@ function Games({ gameData, setGameData }) {
     async function handleNewGame(e) {
         e.preventDefault();
         if(newGameName){
-            await createGame(newGameName, isHighScore);
-            const games = await readGames();
+            const games = await createGame(newGameName, isHighScore);
             await setGameData(games);
         } else {
             alert("Please enter game name");
@@ -35,8 +34,7 @@ function Games({ gameData, setGameData }) {
     };
 
     async function handleDelete(id) {
-        await deleteGame(id);
-        const games = await readGames();
+        const games = await deleteGame(id);
         await setGameData(games);
     };
 

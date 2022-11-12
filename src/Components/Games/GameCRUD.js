@@ -18,7 +18,7 @@ export async function createGame(name, high_score_to_win) {
     });
     const data = await response.json();
     //console.log(data);
-    return data.id;
+    return data;
 };
 
 export async function updateGame(id, name, high_score_to_win) {
@@ -34,7 +34,7 @@ export async function updateGame(id, name, high_score_to_win) {
     });
     const data = await response.json();
     //console.log(data);
-    return data.id;
+    return data;
 };
 
 export async function deleteGame(id) {
@@ -43,4 +43,5 @@ export async function deleteGame(id) {
     });
     const data = await response.json();
     //console.log(data);
+    return data;
 };
