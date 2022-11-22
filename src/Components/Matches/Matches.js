@@ -28,6 +28,7 @@ function Matches({ playerData, gameData, setPlayerData, setGameData }) {
             setMatchData(matches);
             const games = await readGames();
             setGameData(games);
+            //This sets the default game for creating new matches, etc.
             if(games.length > 0){
                 setMatchGame(games[0].id);
             }
